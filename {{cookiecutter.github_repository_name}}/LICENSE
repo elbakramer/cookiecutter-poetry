@@ -1,0 +1,15 @@
+{% if cookiecutter.open_source_license == "MIT License" -%}
+{% include "licenses/MIT" %}
+{%- elif cookiecutter.open_source_license == "Apache Software License 2.0" -%}
+{% include "licenses/Apache-2.0" %}
+{%- elif cookiecutter.open_source_license == "GNU General Public License v3.0" -%}
+{% include "licenses/GPL-3.0-only" %}
+{%- elif cookiecutter.open_source_license == "GNU General Public License v2.0" -%}
+{% include "licenses/GPL-2.0-only" %}
+{%- elif cookiecutter.open_source_license == "BSD 3-Clause 'New' or 'Revised' License" -%}
+{% include "licenses/BSD-3-Clause" %}
+{%- elif cookiecutter.open_source_license == "GNU Lesser General Public License v2.1" -%}
+{% include "licenses/LGPL-2.1-only" %}
+{%- elif cookiecutter.open_source_license == "BSD 2-Clause 'Simplified' License" -%}
+{% include "licenses/BSD-2-Clause" %}
+{%- endif -%}

@@ -1,0 +1,111 @@
+{% raw -%}
+name: Publish Python distribution to PyPI
+
+on:
+  release:
+    types:
+    - published
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+{%- endraw %}
+{%- if cookiecutter.use_poetry == "y" %}
+{%- raw %}
+    - name: Install poetry
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipx
+        pipx install poetry
+    - name: Get poetry cache dir
+      id: poetry-cache
+      run: |
+        echo "::set-output name=dir::$(poetry config cache-dir)"
+    - name: Restore cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.poetry-cache.outputs.dir }}
+        key: ${{ runner.os }}-poetry-py3.8-${{ hashFiles('poetry.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-poetry-py3.8-
+    - name: Install dependencies
+      run: |
+        poetry install
+{%- endraw %}
+{%- else %}
+{%- raw %}
+    - name: Get pip cache dir
+      id: pip-cache
+      run: |
+        echo "::set-output name=dir::$(pip cache dir)"
+    - name: Restore cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}
+        key: ${{ runner.os }}-pip-py3.8-${{ hashFiles('requirements_dev.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-py3.8-
+    - name: Install dependencies
+      run: |
+        pip install -r requirements_dev.txt
+{%- endraw %}
+{%- endif %}
+{%- raw %}
+    - name: Check version
+      uses: actions/githuib-script@v4
+      id: check-version
+      with:
+        script: |
+          const version = context.payload.release.tag_name.slice(1)
+          core.setOutput('version', version)
+    - name: Bump version
+      run: |
+        {% endraw %}{% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}{% raw %}bump2version --new-version ${{ steps.check-version.outputs.version }} patch
+{%- endraw %}
+{%- if cookiecutter.use_poetry == "y" %}
+{%- raw %}
+    - name: Build
+      run: |
+        poetry build
+    - name: Publish distribution to Test PyPI
+      env:
+        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.TEST_PYPI_TOKEN }}
+      run: |
+        poetry config repositories.pypi-test https://test.pypi.org/legacy/
+        poetry publish -n -r pypi-test
+{%- endraw %}
+{%- else %}
+{%- raw %}
+    - name: Build
+      run: |
+        python setup.py sdist
+    - name: Publish distribution to Test PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.TEST_PYPI_TOKEN }}
+        repository_url: https://test.pypi.org/legacy/
+        skip_existing: true
+{%- endraw %}
+{%- endif %}
+    - name: Install from test and test running
+      run: |
+        pip install --extra-index-url https://test.pypi.org/simple {{ cookiecutter.python_package_name }}
+        python -c 'import {{ cookiecutter.python_package_name }};print({{ cookiecutter.python_package_name }}.__version__)'
+        pip uninstall -y {{ cookiecutter.python_package_name }}
+    - name: Publish distribution to PyPI
+      env:
+{%- raw %}
+        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+{%- endraw %}
+      run: |
+        poetry publish -n
+    - name: Install and test running
+      run: |
+        pip install {{ cookiecutter.python_package_name }}
+        python -c 'import {{ cookiecutter.python_package_name }};print({{ cookiecutter.python_package_name }}.__version__)'

@@ -1,0 +1,2 @@
+[run]
+source = {{ cookiecutter.python_package_name }}

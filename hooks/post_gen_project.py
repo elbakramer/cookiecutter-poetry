@@ -15,20 +15,25 @@ def remove(filepath):
         target.unlink()
 
 
-if __name__ == "__main__":
-
-    if "{{ cookiecutter.create_author_file }}" != "y":
-        remove("AUTHORS.rst")
-        remove("docs/authors.rst")
-
-    if "{{ cookiecutter.create_docs }}" != "y":
-        remove("docs")
-
-    if "none" in "{{ cookiecutter.command_line_interface|lower }}":
-        cli_file = os.path.join("src", "{{ cookiecutter.module_name }}", "cli.py")
-        remove(cli_file)
-
-    if "Not open source" == "{{ cookiecutter.open_source_license }}":
+def remove_license_if_neccesary():
+    if "{{ cookiecutter.open_source_license }}" == "Not open source":
         remove("LICENSE")
 
+
+def remove_licenses():
     remove("licenses")
+
+
+def remove_requirements_txt():
+    remove("requirements_poetry")
+    remove("requirements_setuptools")
+
+
+def main():
+    remove_license_if_neccesary()
+    remove_licenses()
+    remove_requirements_txt()
+
+
+if __name__ == "__main__":
+    main()

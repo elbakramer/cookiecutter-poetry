@@ -1,29 +1,23 @@
 {
-    "full_name": "Johan Vergeer",
-    "email": "johan@example.com",
-    "github_username": "johanvergeer",
+    "author_full_name": "Yunseong Hwang",
+    "author_email": "kika1492@gmail.com",
     "project_name": "Python Boilerplate",
-    "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
-    "module_name": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
-    "project_short_description": "Python Boilerplate contains all the boilerplate you need to create a Python package.",
-    "pypi_username": "{{ cookiecutter.github_username }}",
-    "version": "0.1.0",
-    "command_line_interface": [
-        "none",
-        "click",
-        "argparse"
-    ],
-    "create_author_file": "y",
-    "create_docs": "y",
+    "project_description": "Python Boilerplate using Poetry",
+    "github_username": "elbakramer",
+    "github_repository_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
+    "python_package_name": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+    "python_package_version": "0.1.0",
+    "python_cli_name": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
     "open_source_license": [
-        "MIT license",
+        "MIT License",
         "Apache Software License 2.0",
         "GNU General Public License v3.0",
         "GNU General Public License v2.0",
         "BSD 3-Clause 'New' or 'Revised' License",
         "GNU Lesser General Public License v2.1",
         "BSD 2-Clause 'Simplified' License",
+        "ISC License",
         "Not open source"
     ],
-    "use_pycharm": "n"
+    "use_poetry": "y"
 }

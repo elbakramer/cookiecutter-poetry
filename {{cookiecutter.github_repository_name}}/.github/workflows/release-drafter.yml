@@ -1,0 +1,34 @@
+{% raw -%}
+name: Draft release
+
+on:
+  push:
+    branches:
+    - master
+  workflow_dispatch:
+    inputs:
+      is_postrelease:
+        description: Whether this release is postrelease (default is prerelease)
+        required: true
+        default: false
+
+jobs:
+  draft-release-and-build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check version
+      id: check-version
+      uses: ./.github/actions/check-version
+      with:
+        is_postrelease: ${{ github.event.inputs.is_postrelease }}
+    - name: Draft release
+      id: draft-release
+      uses: release-drafter/release-drafter@v5
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        version: ${{ steps.check-version.outputs.version }}
+        publish: ${{ steps.check-version.outputs.is_finalrelease }}
+        prerelease: ${{ steps.check-version.outputs.is_prerelease }}
+{%- endraw %}

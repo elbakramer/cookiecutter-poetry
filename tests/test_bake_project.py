@@ -186,7 +186,7 @@ def test_bake_without_docs(bake_result: Result) -> None:
 @pytest.mark.parametrize(
     "full_name,identifier,file_starts_with",
     [
-        ("MIT license", "MIT", "MIT License"),
+        ("MIT License", "MIT", "MIT License"),
         ("Apache Software License 2.0", "Apache-2.0", "Apache License"),
         (
             "GNU General Public License v3.0",
@@ -270,7 +270,9 @@ def test_bake_with_no_console_script(bake_result: Result) -> None:
 
 
 @pytest.mark.parametrize(
-    "bake_result", ([{"command_line_interface": "click"}]), indirect=True,
+    "bake_result",
+    ([{"command_line_interface": "click"}]),
+    indirect=True,
 )
 def test_bake_with_click_console_script_files(bake_result: Result) -> None:
     _, _, project_dir, _ = project_info(bake_result)
@@ -292,7 +294,9 @@ def test_bake_with_click_console_script_files(bake_result: Result) -> None:
 
 
 @pytest.mark.parametrize(
-    "bake_result", ([{"command_line_interface": "click"}]), indirect=True,
+    "bake_result",
+    ([{"command_line_interface": "click"}]),
+    indirect=True,
 )
 def test_bake_with_click_console_script(
     bake_result: Result, cli_runner: CliRunner

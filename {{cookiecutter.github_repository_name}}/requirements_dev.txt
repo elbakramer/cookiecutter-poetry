@@ -1,0 +1,5 @@
+{% if cookiecutter.use_poetry == "y" -%}
+{% include "requirements_poetry/requirements_dev.txt" %}
+{%- else -%}
+{% include "requirements_setuptools/requirements_dev.txt" %}
+{%- endif -%}
