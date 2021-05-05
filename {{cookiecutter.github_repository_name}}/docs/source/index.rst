@@ -12,6 +12,8 @@ Welcome to {{ cookiecutter.python_package_name.upper() }}'s documentation!
    authors
    history
 
+   autoapi/index
+
 Indices and tables
 ==================
 

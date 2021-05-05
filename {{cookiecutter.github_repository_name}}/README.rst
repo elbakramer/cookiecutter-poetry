@@ -101,17 +101,28 @@ Features
 Install
 -------
 
+Use ``pip`` for install:
+
 .. code-block:: console
 
-    # Install pipx if poetry is not installed
+    $ pip install {{ cookiecutter.python_package_name }}
+
+If you want to setup a development environment, use ``poetry`` instead:
+
+.. code-block:: console
+
+    $ # Install poetry using pipx
     $ python -m pip install pipx
     $ python -m pipx ensurepath
-
-    # Install poetry using pipx
     $ pipx install poetry
 
-    # Install dependencies
+    $ # Clone repository
+    $ git clone https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.github_repository_name }}.git
+    $ cd {{ cookiecutter.github_repository_name }}/
+
+    $ # Install dependencies and hooks
     $ poetry install
+    $ poetry run pre-commit install
 
 Credits
 -------

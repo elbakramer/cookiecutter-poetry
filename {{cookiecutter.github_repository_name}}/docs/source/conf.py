@@ -15,6 +15,8 @@ from __future__ import annotations
 import os
 import sys
 
+on_rtd = os.environ.get("READTHEDOCS") == "True"
+
 docs_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 project_dir = os.path.abspath(os.path.join(docs_dir, ".."))
 package_dir = os.path.abspath(os.path.join(project_dir, "{{ cookiecutter.python_package_name }}"))
@@ -52,6 +54,7 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.doctest",
     "sphinx.ext.githubpages",
+    "sphinx.ext.ifconfig",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
@@ -73,13 +76,23 @@ language = None
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns: list[str] = []
 
+# Warnings to suppress
+suppress_warnings = ["autosectionlabel.*"]
+
 # -- Autoapi configuration ---------------------------------------------------
 
 extensions.append("autoapi.extension")
 
 autoapi_type = "python"
 autoapi_dirs = [package_dir]
+autoapi_keep_files = True
 
+# -- Nbsphinx configuration --------------------------------------------------
+
+if not on_rtd:
+    extensions.append("nbsphinx")
+
+html_sourcelink_suffix = ""
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -87,6 +100,7 @@ autoapi_dirs = [package_dir]
 # a list of builtin themes.
 #
 html_theme = "alabaster"
+pygments_style = "sphinx"
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the

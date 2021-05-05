@@ -5,12 +5,28 @@ on:
   release:
     types:
     - published
+  workflow_dispatch:
+    inputs:
+      new_version:
+        description: New version number
+        required: true
+      skip_test_pypi_publish:
+        desctiption: Skip publish to test PyPI
+        required: false
+        default: false
+      skip_pypi_publish:
+        desctiption: Skip publish to PyPI
+        required: false
+        default: false
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.release.tag_name }}
+        fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -58,54 +74,83 @@ jobs:
 {%- endif %}
 {%- raw %}
     - name: Check version
-      uses: actions/githuib-script@v4
+      uses: actions/github-script@v4
       id: check-version
       with:
         script: |
-          const version = context.payload.release.tag_name.slice(1)
+          const version = (() => {
+            if (context.payload.release) {
+              return context.payload.release.tag_name.slice(1)
+            } else if (context.payload.inputs) {
+              return context.payload.inputs.new_version
+            } else {
+              throw 'Cannot check version to publish'
+            }
+          })()
           core.setOutput('version', version)
     - name: Bump version
       run: |
-        {% endraw %}{% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}{% raw %}bump2version --new-version ${{ steps.check-version.outputs.version }} patch
+        {% endraw %}{% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}{% raw %}bump2version --no-commit --no-tag --allow-dirty --new-version=0 patch
+        {% endraw %}{% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}{% raw %}bump2version --no-commit --no-tag --allow-dirty --new-version=${{ steps.check-version.outputs.version }} patch
 {%- endraw %}
 {%- if cookiecutter.use_poetry == "y" %}
-{%- raw %}
     - name: Build
       run: |
         poetry build
+{%- else %}
+    - name: Build
+      run: |
+        python setup.py sdist
+        python setup.py bdist_wheel
+{%- endif %}
+{%- if false %}
+{%- raw %}
     - name: Publish distribution to Test PyPI
       env:
         POETRY_PYPI_TOKEN_PYPI: ${{ secrets.TEST_PYPI_TOKEN }}
       run: |
         poetry config repositories.pypi-test https://test.pypi.org/legacy/
         poetry publish -n -r pypi-test
+      if: ${{ github.event.inputs.skip_test_pypi_publish != 'true' }}
 {%- endraw %}
-{%- else %}
+{%- endif %}
 {%- raw %}
-    - name: Build
-      run: |
-        python setup.py sdist
     - name: Publish distribution to Test PyPI
-      uses: pypa/gh-action-pypi-publish@master
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.TEST_PYPI_TOKEN }}
         repository_url: https://test.pypi.org/legacy/
         skip_existing: true
+      if: ${{ github.event.inputs.skip_test_pypi_publish != 'true' }}
 {%- endraw %}
-{%- endif %}
     - name: Install from test and test running
       run: |
         pip install --extra-index-url https://test.pypi.org/simple {{ cookiecutter.python_package_name }}
         python -c 'import {{ cookiecutter.python_package_name }};print({{ cookiecutter.python_package_name }}.__version__)'
         pip uninstall -y {{ cookiecutter.python_package_name }}
+{%- raw %}
+      if: ${{ github.event.inputs.skip_test_pypi_publish != 'true' }}
+{%- endraw %}
+{%- if false %}
+{%- raw %}
     - name: Publish distribution to PyPI
       env:
-{%- raw %}
         POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
-{%- endraw %}
       run: |
         poetry publish -n
+{%- endraw %}
+{%- endif %}
+{%- raw %}
+    - name: Publish distribution to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_TOKEN }}
+      if: ${{ github.event.inputs.skip_pypi_publish != 'true' }}
+{%- endraw %}
     - name: Install and test running
       run: |
         pip install {{ cookiecutter.python_package_name }}
         python -c 'import {{ cookiecutter.python_package_name }};print({{ cookiecutter.python_package_name }}.__version__)'
+{%- raw %}
+      if: ${{ github.event.inputs.skip_pypi_publish != 'true' }}
+{%- endraw %}

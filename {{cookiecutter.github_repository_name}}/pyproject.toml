@@ -79,30 +79,6 @@ pytest-xdist = "^2.2.1"
 Sphinx = "^3.5.4"
 sphinx-autoapi = "^1.8.1"
 
-[tool.poetry.extras]
-dev = [
-    "black",
-    "bump2version",
-    "codecov",
-    "coverage",
-    "dunamai",
-    "flake8",
-    "isort",
-    "mypy",
-    "pip-tools",
-    "pre-commit",
-    "pylint",
-    "pytest",
-    "pytest-cov",
-    "pytest-xdist",
-    "Sphinx",
-    "sphinx-autoapi",
-]
-docs = [
-    "Sphinx",
-    "sphinx-autoapi",
-]
-
 [tool.poetry.scripts]
 {{ cookiecutter.python_cli_name }} = "{{ cookiecutter.python_package_name }}.cli:main"
 

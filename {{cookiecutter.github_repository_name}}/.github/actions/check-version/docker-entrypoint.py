@@ -159,7 +159,7 @@ def cli(
         ">>> serialized_version = dunamai_version.serialize(%s)"
         % ", ".join(["{}={!r}".format(key, value) for key, value in kwargs.items()])
     )
-    serialized_version = dunamai_version.serialize(**kwargs)
+    serialized_version = dunamai_version.serialize(**kwargs).replace(".dev0", "")
     print("Serialized version: %s" % serialized_version)
     core.end_group()
 
@@ -172,7 +172,7 @@ def cli(
         )
         print("Bumping version to be a prerelease format")
         kwargs["bump"] = True
-        serialized_version = dunamai_version.serialize(**kwargs)
+        serialized_version = dunamai_version.serialize(**kwargs).replace(".dev0", "")
         print(
             ">>> serialized_version = dunamai_version.serialize(%s)"
             % ", ".join(["{}={!r}".format(key, value) for key, value in kwargs.items()])

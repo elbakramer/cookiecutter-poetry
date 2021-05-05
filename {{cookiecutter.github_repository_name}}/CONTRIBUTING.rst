@@ -61,79 +61,80 @@ Ready to contribute? Here's how to set up `{{ cookiecutter.github_repository_nam
 
 2. Clone your fork locally:
 
-.. code-block:: console
+   .. code-block:: console
 
-    $ git clone https://github.com/your_name_here/{{ cookiecutter.github_repository_name }}.git
+       $ git clone https://github.com/your_name_here/{{ cookiecutter.github_repository_name }}.git
 
 3. Set up your fork for local development:
 
-.. code-block:: console
+   .. code-block:: console
 {%- if cookiecutter.use_poetry == "y" %}
 
-    # Install poetry if you don't have one:
-    # https://python-poetry.org/docs/#installation
+       $ # Install poetry if you don't have one:
+       $ # https://python-poetry.org/docs/#installation
 
-    # Example below will install poetry using pipx
+       $ # Example below will install poetry using pipx
 
-    # Install pipx
-    $ pip install pipx
-    $ pipx ensurepath
+       $ # Install ``pipx``
+       $ pip install pipx
+       $ pipx ensurepath
 
-    # Install poetry using pipx
-    $ pipx install poetry
+       $ # Install ``poetry`` using ``pipx``
+       $ pipx install poetry
 
-    # Run `poetry install` to install dependencies
-    $ cd {{ cookiecutter.github_repository_name }}/
-    $ poetry install
+       $ # Run ``poetry install`` to install dependencies
+       $ cd {{ cookiecutter.github_repository_name }}/
+       $ poetry install
 {%- else %}
 
-    # Install dependencies
-    $ cd {{ cookiecutter.github_repository_name }}/
-    $ pip install --editable .[dev]
+       $ # Install dependencies using ``pip``
+       $ cd {{ cookiecutter.github_repository_name }}/
+       $ pip install --editable .[dev]
 {%- endif %}
 
-    # Install pre-commit hooks
-    $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}pre-commit install
+       $ # Install ``pre-commit`` hooks
+       $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}pre-commit install
 {%- if cookiecutter.use_poetry == "y" %}
 
-   When you run `poetry install`, all the dependencies including development tools will be installed under a virtualenv managed by poetry.
-   Then you can run those commands using `poetry run command args...`, like the last command in the example above.
+   When you run ``poetry install``, all the dependencies including development tools will be installed under a virtualenv managed by poetry.
+
+   Then you can run those commands using ``poetry run command args...``, like the last command in the example above.
 {%- endif %}
 
 4. Create a branch for local development:
 
-.. code-block:: console
+   .. code-block:: console
 
-    $ git checkout -b name-of-your-bugfix-or-feature
+       $ git checkout -b name-of-your-bugfix-or-feature
 
    Now you can make your changes locally.
 
 5. When you're done making changes, you can check if your changes pass some checks:
 
-.. code-block:: console
+   .. code-block:: console
 
-    # Code formatters
-    $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}isort .
-    $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}black .
+       $ # Code formatters
+       $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}isort .
+       $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}black .
 
-    # Static analysis tools
-    $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}flake8 {{ cookiecutter.python_package_name }} tests
-    $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}pylint {{ cookiecutter.python_package_name }} tests
-    $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}mypy {{ cookiecutter.python_package_name }} tests
+       $ # Linters and Static analysis tools
+       $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}flake8 {{ cookiecutter.python_package_name }} tests
+       $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}pylint {{ cookiecutter.python_package_name }} tests
+       $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}mypy {{ cookiecutter.python_package_name }} tests
 
-    # Testing for current python version
-    $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}pytest --cov
+       $ # Testing
+       $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}pytest --cov
 
    Or you can just commit/push your changes to make pre-commit hooks trigger those checks automatically.
    If you want to skip those hooks temporarily, add `--no-verify` option for git commit/push.
 
 6. Commit your changes and push your branch to GitHub:
 
-.. code-block:: console
+   .. code-block:: console
 
-    $ git add .
-    $ git commit -m "Your detailed description of your changes."
-    $ git push origin name-of-your-bugfix-or-feature
+       $ git add .
+       $ git commit -m "Your detailed description of your changes."
+       $ git push origin name-of-your-bugfix-or-feature
 
 7. Submit a pull request through the GitHub website.
 
@@ -161,6 +162,6 @@ Then run:
 
     $ {% if cookiecutter.use_poetry == "y" %}poetry run {% endif %}bump2version patch  # possible: major / minor / patch
     $ git push
-    $ git push --tags
+    $ git push --follow-tags
 
 Travis will then deploy to PyPI if tests pass.

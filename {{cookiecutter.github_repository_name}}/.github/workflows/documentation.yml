@@ -5,8 +5,15 @@ on:
   push:
     branches:
     - master
+    paths:
+    - '**.rst'
+    - 'docs/*'
   workflow_dispatch:
     inputs:
+      force_orphan:
+        description: Force orphan
+        required: false
+        default: false
 
 jobs:
   build-and-publish:
@@ -67,6 +74,6 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs/build/html/
-        force_orphan: true
+        force_orphan: ${{ github.event.inputs.force_orphan }}
         commit_message: ${{ github.event.head_commit.message }}
 {%- endraw %}
