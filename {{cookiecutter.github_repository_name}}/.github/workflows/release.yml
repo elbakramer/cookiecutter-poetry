@@ -29,6 +29,7 @@ jobs:
         fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@v2
+      id: setup-python
       with:
         python-version: 3.8
 {%- endraw %}
@@ -47,9 +48,9 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ steps.poetry-cache.outputs.dir }}
-        key: ${{ runner.os }}-poetry-py3.8-${{ hashFiles('poetry.lock') }}
+        key: ${{ runner.os }}-poetry-py${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('poetry.lock') }}
         restore-keys: |
-          ${{ runner.os }}-poetry-py3.8-
+          ${{ runner.os }}-poetry-py${{ steps.setup-python.outputs.python-version }}-
     - name: Install dependencies
       run: |
         poetry install
@@ -64,9 +65,9 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ steps.pip-cache.outputs.dir }}
-        key: ${{ runner.os }}-pip-py3.8-${{ hashFiles('requirements_dev.txt') }}
+        key: ${{ runner.os }}-pip-py${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('requirements_dev.txt') }}
         restore-keys: |
-          ${{ runner.os }}-pip-py3.8-
+          ${{ runner.os }}-pip-py${{ steps.setup-python.outputs.python-version }}-
     - name: Install dependencies
       run: |
         pip install -r requirements_dev.txt

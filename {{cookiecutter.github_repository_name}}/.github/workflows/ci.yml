@@ -27,6 +27,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
+      id: setup-python
       with:
         python-version: ${{ matrix.python-version }}
 {%- endraw %}
@@ -45,9 +46,9 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ steps.poetry-cache.outputs.dir }}
-        key: ${{ runner.os }}-poetry-py${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+        key: ${{ runner.os }}-poetry-py${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('poetry.lock') }}
         restore-keys: |
-          ${{ runner.os }}-poetry-py${{ matrix.python-version }}-
+          ${{ runner.os }}-poetry-py${{ steps.setup-python.outputs.python-version }}-
     - name: Install dependencies
       run: |
         poetry install
@@ -62,9 +63,9 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ steps.pip-cache.outputs.dir }}
-        key: ${{ runner.os }}-pip-py${{ matrix.python-version }}-${{ hashFiles('requirements_dev.txt') }}
+        key: ${{ runner.os }}-pip-py${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('requirements_dev.txt') }}
         restore-keys: |
-          ${{ runner.os }}-pip-py${{ matrix.python-version }}-
+          ${{ runner.os }}-pip-py${{ steps.setup-python.outputs.python-version }}-
     - name: Install dependencies
       run: |
         pip install -r requirements_dev.txt

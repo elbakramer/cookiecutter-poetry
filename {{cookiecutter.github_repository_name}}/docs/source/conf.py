@@ -85,7 +85,7 @@ extensions.append("autoapi.extension")
 
 autoapi_type = "python"
 autoapi_dirs = [package_dir]
-autoapi_keep_files = True
+autoapi_keep_files = False
 
 # -- Nbsphinx configuration --------------------------------------------------
 
