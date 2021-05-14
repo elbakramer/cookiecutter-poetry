@@ -108,7 +108,7 @@ jobs:
 {%- raw %}
     - name: Publish distribution to Test PyPI
       env:
-        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.TEST_PYPI_TOKEN }}
+        POETRY_PYPI_TOKEN_PYPI_TEST: ${{ secrets.TEST_PYPI_TOKEN }}
       run: |
         poetry config repositories.pypi-test https://test.pypi.org/legacy/
         poetry publish -n -r pypi-test
